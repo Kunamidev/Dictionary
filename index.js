@@ -15,17 +15,30 @@ const fetchDictionaryData = async (word) => {
   }
 };
 
-// Endpoint to get dictionary data for a specified word
+// Root endpoint to show a welcome message
+app.get('/', (req, res) => {
+  res.send('Provide a word to search');
+});
+
+// Endpoint to get dictionary data for a specified word (query parameter)
 app.get('/q=', async (req, res) => {
   const word = req.query.word;
   if (!word) {
     return res.status(400).json({ error: 'Please provide a word to search for.' });
   }
   const dictionaryData = await fetchDictionaryData(word);
-  res.json(dictionaryData);
+  res.json({ word, dictionaryData });
+});
+
+// Endpoint to get dictionary data for a specified word (URL parameter)
+app.get('/word/:word', async (req, res) => {
+  const word = req.params.word;
+  const dictionaryData = await fetchDictionaryData(word);
+  res.json({ word, dictionaryData });
 });
 
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
